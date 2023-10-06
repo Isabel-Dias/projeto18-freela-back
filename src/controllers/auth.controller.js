@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import { signInSchema } from "../schemas/auth.schema.js";
-import { getUser } from "../repositories/user.repository.js";
+import { getUserByEmail } from "../repositories/user.repository.js";
 import { registerSession } from "../repositories/auth.repository.js";
 
 export async function signIn(req, res) {
@@ -16,7 +16,7 @@ export async function signIn(req, res) {
             return res.status(422).send("Todos os campos são obrigatórios");
         }
 
-        const userExists = await getUser(email);
+        const userExists = await getUserByEmail(email);
 
         if (!userExists.rows.length) {
 

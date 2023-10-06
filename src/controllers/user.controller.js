@@ -5,7 +5,8 @@ import { getUserByEmail, registerUser } from "../repositories/user.repository.js
 export async function signUp(req, res) {
 
     try {
-        const {name, email, password} = req.body;
+        const { password, email } = req.body;
+        const userData = req.body;
 
         const validationSchema = signUpSchema.validate(user);
 
@@ -21,7 +22,7 @@ export async function signUp(req, res) {
             return res.sendStatus(409)
         }
  
-        await registerUser(name, email, passwordHash)
+        await registerUser(userData, passwordHash)
  
         return res.sendStatus(201)
         
