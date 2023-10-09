@@ -3,7 +3,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const { Pool } = pg
+const { Pool } = pg;
 
 const configDatabase = {
   connectionString: process.env.DATABASE_URL,

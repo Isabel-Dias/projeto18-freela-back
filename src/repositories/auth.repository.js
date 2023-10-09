@@ -27,4 +27,6 @@ export async function getUserById(user_id) {
         FROM users
         WHERE id = $1` , [user_id]
     )
+
+    return userIdExists;
 }

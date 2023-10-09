@@ -8,7 +8,7 @@ export async function signIn(req, res) {
     
     try {
         const { email, password } = req.body;
-
+        
         const validationSchema = signInSchema.validate(req.body);
 
         if (validationSchema.error) {
@@ -20,16 +20,16 @@ export async function signIn(req, res) {
 
         if (!userExists.rows.length) {
 
-            return res.sendStatus(404).send("Usuário não existe!");
+            return res.status(404).send("Usuário não existe!");
         }
 
-        const userPassword = userExists.rows[0].password
+        const passwordReceived = userExists.rows[0].password
 
-        const isValidPassword = bcrypt.compareSync(password, userPassword)
+        const isValidPassword = bcrypt.compareSync(password, passwordReceived)
 
         if (!isValidPassword) {
             
-            return res.sendStatus(401).send("Senha inválida!");
+            return res.status(401).send("Senha inválida!");
         }
 
         const token = uuid();
@@ -37,7 +37,7 @@ export async function signIn(req, res) {
         const { id } = userExists.rows[0];
 
         await registerSession(token, id);
-
+        
         return res.status(200).send({ token });
 
     } catch (error) {
