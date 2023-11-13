@@ -1,4 +1,4 @@
-import { getAllServices, registerNewService } from "../repositories/services.repository.js"
+import { getAllServices, getServiceById, registerNewService } from "../repositories/services.repository.js"
 import newServiceSchema from "../schemas/services.schema.js"
 
 export async function getServices(req, res) {
@@ -37,4 +37,19 @@ export async function registerService(req, res) {
     } catch (error) {
         return res.status(500).send(error)
     }
+}
+
+export async function getOneService(req, res) {
+    const {id} = req.params;
+
+    try {
+        
+        const service =  await getServiceById(id)
+
+        return res.status(201).send(service.rows)
+
+    } catch (error) {
+        return res.status(500).send(error)
+    }
+    
 }

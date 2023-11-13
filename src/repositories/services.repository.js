@@ -36,3 +36,28 @@ export async function registerNewService(service, id) {
     )
 
 }
+
+export async function getServiceById(serviceId) {
+    
+    const service = await db.query(
+        `SELECT 
+            services.name AS service,
+            services.description,
+            services.price,
+            services.photo,
+            users.name AS provider, 
+            users.phone_number AS "phoneNumber",
+            addresses.city,
+            addresses.state
+        FROM 
+            services
+        JOIN 
+            users ON services.user_id = users.id
+        JOIN 
+            addresses ON services.user_id = addresses.user_id
+        WHERE 
+            services.id = $1`,
+        [serviceId]
+    )
+    return service;
+}
