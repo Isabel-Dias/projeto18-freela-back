@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt"
 import { signUpSchema } from "../schemas/auth.schema.js";
-import { getUserByEmail, registerAddress, registerUser } from "../repositories/user.repository.js";
+import { getUserByEmail, getUserByPhone, registerAddress, registerUser } from "../repositories/user.repository.js";
 
 export async function signUp(req, res) {
 
     
     try {
-        const { password, email } = req.body;
+        const { password, email, phoneNumber } = req.body;
         const userData = req.body;
 
         const validationSchema = signUpSchema.validate(userData);
@@ -20,7 +20,13 @@ export async function signUp(req, res) {
         const userAlreadyExists = await getUserByEmail(email);
         
         if(userAlreadyExists.rows.length) {
-            return res.sendStatus(409)
+            return res.status(409).send("Uma conta com este email já existe")
+        }
+
+        const numberInUse = await getUserByPhone(phoneNumber)
+
+        if(numberInUse.rowCount != 0) {
+            return res.status(409).send("Uma conta com este número de telefone já existe")
         }
         
         await registerUser(userData, passwordHash)
@@ -28,13 +34,13 @@ export async function signUp(req, res) {
         const user = await getUserByEmail(email);
         
         const { id } = user.rows[0]
-        const { address, city, estate} = req.body
+        const { city, state } = req.body
 
-        await registerAddress(id, address, city, estate)
+        await registerAddress(id, city, state)
         
         return res.sendStatus(202)
         
     } catch (error) {
-        return res.sendStatus(500);
+        return res.status(500).send(error);
     }
 }

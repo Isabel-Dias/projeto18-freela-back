@@ -5,7 +5,7 @@ async function AuthSession (req, res, next){
     const token = authorization?.replace("Bearer ","");
 
     if(!token){
-        return res.sendStatus(401);
+        return res.status(401).send("Acesso não autorizado");
     }
     
     try {
@@ -13,7 +13,7 @@ async function AuthSession (req, res, next){
         const sessionExists = await getSession(token)
 
         if(!sessionExists.rows.length){
-            return res.sendStatus(401);
+            return res.status(401).send("Sessão inexistente, acesso não autorizado");
         }
         
         const { user_id } = sessionExists.rows[0];
@@ -21,7 +21,7 @@ async function AuthSession (req, res, next){
         const userExists = await getUserById(user_id);
 
         if(!userExists.rows.length){
-            return res.sendStatus(401);
+            return res.status(401).send("Sessão inexistente, acesso não autorizado");
         }
         
         res.locals.user = user_id;

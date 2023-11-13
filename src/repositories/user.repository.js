@@ -11,20 +11,30 @@ export async function getUserByEmail(email) {
     return user;
 }
 
-export async function registerAddress(id, address, city, estate) {
-    console.log("bastard");
+export async function getUserByPhone(phone) {
+
+    const user = await db.query(
+        `SELECT * 
+        FROM users 
+        WHERE phone_number = $1`, [phone]
+    )
+
+    return user;
+}
+
+export async function registerAddress(id, city, state) {
+    
     await db.query(
         `INSERT INTO addresses
-        (user_id, address, city, estate)
+        (user_id, city, state)
         VALUES
-        ($1, $2, $3, $4)`,
-        [id, address, city, estate]
+        ($1, $2, $3)`,
+        [id, city, state]
     )
 }
 
-
 export async function registerUser(userData, passwordHash) {
-    console.log(userData);
+    
     const { name, email, birthday, phoneNumber} = userData
 
     await db.query(
